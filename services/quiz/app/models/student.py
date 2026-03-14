@@ -31,7 +31,6 @@ class Answer(BaseModel):
 class SubmitAnswerRequest(BaseModel):
     """Request body for POST /submit-answer."""
 
-    student_id: str
     question_id: str
     selected_answer: str
 

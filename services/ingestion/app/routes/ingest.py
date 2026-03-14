@@ -93,6 +93,19 @@ async def ingest_pdf(
     return IngestResponse(source_id=source_id, status="processing")
 
 
+@router.get("/ingest/sources")
+async def get_sources(
+    current_user: UserInDB = Depends(get_current_teacher),
+):
+    """Get all uploaded sources."""
+    db = get_database()
+    cursor = db.sources.find().sort("uploaded_at", -1)
+    sources = await cursor.to_list(length=100)
+    for s in sources:
+        s["source_id"] = s.pop("_id", s.get("id", ""))
+    return sources
+
+
 @router.get("/ingest/{source_id}/status")
 async def get_ingest_status(
     source_id: str,

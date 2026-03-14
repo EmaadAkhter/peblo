@@ -129,13 +129,19 @@ async def submit_answer(
             detail=f"Question {request.question_id} not found",
         )
 
-    is_correct = request.selected_answer.strip().lower() == question["answer"].strip().lower()
+    # Force string conversion before stripping to be absolutely safe
+    student_ans = str(request.selected_answer).strip().lower()
+    correct_ans = str(question.get("answer", "")).strip().lower()
+    is_correct = student_ans == correct_ans
+    
     topic = question.get("topic", "General")
     subject = question.get("subject", "General")
 
+    student_id = current_user["_id"]
+
     # Record the answer
     answer_doc = {
-        "student_id": request.student_id,
+        "student_id": student_id,
         "question_id": request.question_id,
         "selected_answer": request.selected_answer,
         "is_correct": is_correct,
@@ -146,7 +152,7 @@ async def submit_answer(
     # Update adaptive difficulty
     new_difficulty = await update_difficulty_after_answer(
         db=db,
-        student_id=request.student_id,
+        student_id=student_id,
         question_id=request.question_id,
         is_correct=is_correct,
         subject=subject,

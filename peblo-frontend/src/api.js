@@ -60,6 +60,8 @@ export const api = {
             body: JSON.stringify({ source_id: sourceId }),
         }),
 
+    getSources: () => request('/ingest/sources'),
+
     getIngestStatus: (sourceId) =>
         request(`/ingest/${sourceId}/status`),
 

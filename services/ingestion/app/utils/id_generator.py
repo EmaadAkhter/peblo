@@ -6,13 +6,20 @@ ID formats:
 - Question: Q_SRC001_CH01_001, Q_SRC001_CH01_002, ...
 """
 
+from pymongo import ReturnDocument
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 
 async def generate_source_id(db: AsyncIOMotorDatabase) -> str:
     """Generate the next sequential source ID (SRC_001, SRC_002, ...)."""
-    count = await db.sources.count_documents({})
-    return f"SRC_{count + 1:03d}"
+    # Use find_one_and_update for atomic increment to prevent race conditions
+    doc = await db.counters.find_one_and_update(
+        {"_id": "source_id"},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=ReturnDocument.AFTER
+    )
+    return f"SRC_{doc['seq']:03d}"
 
 
 def generate_chunk_id(source_id: str, chunk_index: int) -> str:

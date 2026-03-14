@@ -15,22 +15,8 @@ export default function TeacherDashboard() {
 
     const fetchSources = useCallback(async () => {
         try {
-            // We don't have a list endpoint in the backend, so we'll track sources locally
-            // For now, load from localStorage
-            const stored = JSON.parse(localStorage.getItem('peblo_sources') || '[]');
-            // Refresh statuses from backend
-            const updated = await Promise.all(
-                stored.map(async (s) => {
-                    try {
-                        const status = await api.getIngestStatus(s.source_id);
-                        return { ...s, ...status };
-                    } catch {
-                        return s;
-                    }
-                })
-            );
+            const updated = await api.getSources();
             setSources(updated);
-            localStorage.setItem('peblo_sources', JSON.stringify(updated));
             setError(null);
 
             // Check if any are still processing
@@ -61,20 +47,14 @@ export default function TeacherDashboard() {
     const handleIngested = useCallback(() => {
         // Refresh list and start polling
         setTimeout(async () => {
-            // Get the latest source ID from backend by refreshing
-            const stored = JSON.parse(localStorage.getItem('peblo_sources') || '[]');
-            // We need to figure out the new source's data — ingestPDF returns source_id
-            // The UploadPanel doesn't pass the full result, so we just re-fetch
             await fetchSources();
             startPolling();
         }, 500);
     }, [fetchSources, startPolling]);
 
     const handleAddSource = useCallback((sourceData) => {
-        const stored = JSON.parse(localStorage.getItem('peblo_sources') || '[]');
-        stored.push(sourceData);
-        localStorage.setItem('peblo_sources', JSON.stringify(stored));
-        setSources([...stored]);
+        // Optimistic UI update before next fetch overrides it
+        setSources(prev => [sourceData, ...prev]);
         startPolling();
     }, [startPolling]);
 

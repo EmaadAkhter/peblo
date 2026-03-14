@@ -36,6 +36,3 @@ settings = Settings()
 
 # Global key rotator — call next(groq_key_rotator) to get the next key
 groq_key_rotator = settings.get_groq_key_cycle()
-
-# Global key rotator — call next(groq_key_rotator) to get the next key
-groq_key_rotator = settings.get_groq_key_cycle()

@@ -84,3 +84,9 @@ PYTHONPATH=. pytest -v
 
 ---
 
+## Architectural Acknowledgements & Limitations
+
+While Peblo implements a robust microservices pattern, a few intentional design trade-offs were made for the scope of this assessment:
+
+1. **Auth Service Code Duplication:** The JWT validation logic/utilities and user models are duplicated across the Auth, Ingestion, and Quiz services. In a full production environment, this would either be abstracted into a shared internal Python library, or the API Gateway would be configured to validate tokens before routing traffic downstream.
+2. **In-Memory TTL Caching:** The Quiz service utilizes a simple in-memory `TTLCache` to speed up question retrieval without constantly querying MongoDB. Because it is in-memory, the cache is wiped whenever the individual container restarts or scales horizontally. A distributed cache like Redis would be preferred in production.

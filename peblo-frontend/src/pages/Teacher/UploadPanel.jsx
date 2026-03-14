@@ -61,6 +61,7 @@ export default function UploadPanel({ onIngested }) {
                 status: result.status || 'processing',
                 chunk_count: 0
             });
+        } catch (err) {
             setError('Upload failed. Please try again.');
         } finally {
             setLoading(false);
