@@ -1,0 +1,93 @@
+.questionCard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.questionText {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+}
+
+.optionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fillInput {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 150ms ease;
+}
+
+.fillInput:focus {
+    border-color: var(--accent);
+}
+
+.fillInput::placeholder {
+    color: var(--text-hint);
+}
+
+.fillSubmit {
+    margin-top: 12px;
+}
+
+.feedback {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    animation: gentleReveal 300ms ease;
+}
+
+.feedbackCorrect {
+    composes: feedback;
+    background: var(--correct-bg);
+    color: var(--correct);
+}
+
+.feedbackIncorrect {
+    composes: feedback;
+    background: var(--incorrect-bg);
+    color: var(--incorrect);
+}
+
+@keyframes gentleReveal {
+    from {
+        opacity: 0;
+        transform: scale(1.01);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tfContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .questionCard {
+        padding: 24px;
+    }
+}

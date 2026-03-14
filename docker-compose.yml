@@ -1,0 +1,42 @@
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service
+      - ingestion-service
+      - quiz-service
+      - frontend
+
+  auth-service:
+    build: ./services/auth
+    env_file: .env
+    expose:
+      - "8001"
+    volumes:
+      - ./services/auth/app:/app/app
+
+  ingestion-service:
+    build: ./services/ingestion
+    env_file: .env
+    expose:
+      - "8002"
+    volumes:
+      - ./pdfs:/app/pdfs
+      - ./services/ingestion/app:/app/app
+
+  quiz-service:
+    build: ./services/quiz
+    env_file: .env
+    expose:
+      - "8003"
+    volumes:
+      - ./services/quiz/app:/app/app
+
+  frontend:
+    build: ./peblo-frontend
+    expose:
+      - "5173"
+    environment:
+      - VITE_API_URL=http://localhost

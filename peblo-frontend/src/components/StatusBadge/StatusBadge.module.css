@@ -1,0 +1,74 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    white-space: nowrap;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Statuses */
+.processing {
+    background: var(--amber-light);
+    color: var(--amber);
+}
+
+.processing .dot {
+    background: var(--amber);
+}
+
+.completed {
+    background: var(--correct-bg);
+    color: var(--correct);
+}
+
+.completed .dot {
+    background: var(--correct);
+}
+
+.failed {
+    background: var(--incorrect-bg);
+    color: var(--incorrect);
+}
+
+.failed .dot {
+    background: var(--incorrect);
+}
+
+/* Difficulty */
+.easy {
+    background: var(--correct-bg);
+    color: var(--correct);
+}
+
+.easy .dot {
+    background: var(--correct);
+}
+
+.medium {
+    background: var(--amber-light);
+    color: var(--amber);
+}
+
+.medium .dot {
+    background: var(--amber);
+}
+
+.hard {
+    background: var(--incorrect-bg);
+    color: var(--incorrect);
+}
+
+.hard .dot {
+    background: var(--incorrect);
+}

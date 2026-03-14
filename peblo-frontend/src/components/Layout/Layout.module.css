@@ -1,0 +1,114 @@
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.logoAccent {
+    color: var(--accent);
+}
+
+.main {
+    flex: 1;
+    padding: 32px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.nameModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 40, 37, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 200ms ease;
+}
+
+.nameCard {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.nameCard h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.nameCard p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.nameInput {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--surface);
+    transition: border-color 150ms ease;
+    margin-bottom: 16px;
+    outline: none;
+}
+
+.nameInput:focus {
+    border-color: var(--accent);
+}
+
+.nameInput::placeholder {
+    color: var(--text-hint);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px;
+    }
+
+    .main {
+        padding: 16px;
+    }
+}
