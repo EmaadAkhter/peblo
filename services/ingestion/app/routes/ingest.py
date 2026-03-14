@@ -93,7 +93,7 @@ async def ingest_pdf(
     return IngestResponse(source_id=source_id, status="processing")
 
 
-@router.get("/ingest/sources")
+@router.get("/sources")
 async def get_sources(
     current_user: UserInDB = Depends(get_current_teacher),
 ):

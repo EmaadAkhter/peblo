@@ -137,7 +137,7 @@ async def submit_answer(
     topic = question.get("topic", "General")
     subject = question.get("subject", "General")
 
-    student_id = current_user["_id"]
+    student_id = current_user.id
 
     # Record the answer
     answer_doc = {

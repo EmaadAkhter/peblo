@@ -1,13 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from app.main import app
 from app.services.auth import get_current_user, get_current_student
 
 client = TestClient(app)
 
-def override_get_current_user(): return {"_id": "user123"}
-def override_get_current_student(): return {"_id": "student123", "role": "student"}
+def override_get_current_user(): return MagicMock(id="user123")
+def override_get_current_student(): return MagicMock(id="student123", role="student")
 
 app.dependency_overrides[get_current_user] = override_get_current_user
 app.dependency_overrides[get_current_student] = override_get_current_student
@@ -67,7 +67,7 @@ def test_get_topics(mock_get_database):
 def test_submit_answer_correct(mock_update, mock_get_database):
     response = client.post(
         "/submit-answer",
-        json={"student_id": "student123", "question_id": "q1", "selected_answer": "Cell", "time_spent_ms": 5000}
+        json={"question_id": "q1", "selected_answer": "Cell"}
     )
     assert response.status_code == 200
     data = response.json()
