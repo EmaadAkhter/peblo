@@ -26,8 +26,13 @@ async def register_user(user_in: UserCreate):
     if user_in.role not in {"teacher", "student"}:
         raise HTTPException(status_code=400, detail="Role must be 'teacher' or 'student'")
 
-    count = await db.users.count_documents({})
-    user_id = f"U_{count + 1:04d}"
+    counter = await db.counters.find_one_and_update(
+        {"_id": "user_id"},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=True,
+    )
+    user_id = f"U_{counter['seq']:04d}"
 
     hashed_password = get_password_hash(user_in.password)
     user_doc = {

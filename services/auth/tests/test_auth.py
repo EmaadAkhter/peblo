@@ -29,9 +29,14 @@ class MockCollection:
     async def count_documents(self, query):
         return 0
 
+class MockCounters:
+    async def find_one_and_update(self, filter, update, upsert=False, return_document=False):
+        return {"_id": "user_id", "seq": 1}
+
 class MockDB:
     def __init__(self):
         self.users = MockCollection("users")
+        self.counters = MockCounters()
 
 mock_db_instance = MockDB()
 

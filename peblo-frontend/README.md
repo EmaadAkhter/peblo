@@ -11,7 +11,7 @@ cp .env.example .env   # edit if your backend runs on a different port
 npm run dev
 ```
 
-> **Prerequisite:** The Peblo backend must be running at the URL specified in `.env` (default: `http://localhost:8000`).
+> **Prerequisite:** The Peblo backend must be running at the URL specified in `.env` (default: `http://localhost`).
 
 ## Views
 
