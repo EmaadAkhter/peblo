@@ -131,16 +131,32 @@ async def delete_source(
     source_id: str,
     current_user: UserInDB = Depends(get_current_teacher),
 ):
-    """Delete a source and all its associated chunks and questions."""
+    """Delete a source and all its associated chunks, questions, and vectors."""
     db = get_database()
 
     source = await db.sources.find_one({"_id": source_id})
     if not source:
         raise HTTPException(status_code=404, detail=f"Source {source_id} not found")
 
+    # Delete from MongoDB
     questions_result = await db.questions.delete_many({"source_id": source_id})
     chunks_result = await db.chunks.delete_many({"source_id": source_id})
     await db.sources.delete_one({"_id": source_id})
+
+    # Delete vectors from Qdrant
+    try:
+        from app.vector_store import get_qdrant_client, CHUNK_COLLECTION, QUESTION_COLLECTION
+        from qdrant_client.models import Filter, FieldCondition, MatchValue
+
+        qdrant = get_qdrant_client()
+        source_filter = Filter(
+            must=[FieldCondition(key="source_id", match=MatchValue(value=source_id))]
+        )
+        qdrant.delete(collection_name=CHUNK_COLLECTION, points_selector=source_filter)
+        qdrant.delete(collection_name=QUESTION_COLLECTION, points_selector=source_filter)
+        logger.info(f"Deleted Qdrant vectors for source {source_id}")
+    except Exception as e:
+        logger.warning(f"Qdrant vector cleanup failed for {source_id}: {e}")
 
     logger.info(
         f"Deleted source {source_id}: "
