@@ -411,11 +411,6 @@ async def generate_questions_for_source(
         )
         total_stored += count
 
-    # Invalidate quiz cache for all topics that were affected
-    topics = {chunk_doc.get("topic", "General") for chunk_doc in chunks}
-    for topic in topics:
-        pass # quiz_cache.invalidate_prefix(f"quiz::{topic}") # Removed as per instruction
-
     logger.info(
         f"Generated {total_stored} questions for source {source_id} "
         f"across {len(chunks)} chunks"

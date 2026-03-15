@@ -84,9 +84,10 @@ PYTHONPATH=. pytest -v
 
 ---
 
-## Architectural Acknowledgements & Limitations
+## Architectural Decisions & Trade-offs
 
-While Peblo implements a robust microservices pattern, a few intentional design trade-offs were made for the scope of this assessment:
-
-1. **Auth Service Code Duplication:** The JWT validation logic/utilities and user models are duplicated across the Auth, Ingestion, and Quiz services. In a full production environment, this would either be abstracted into a shared internal Python library, or the API Gateway would be configured to validate tokens before routing traffic downstream.
-2. **In-Memory TTL Caching:** The Quiz service utilizes a simple in-memory `TTLCache` to speed up question retrieval without constantly querying MongoDB. Because it is in-memory, the cache is wiped whenever the individual container restarts or scales horizontally. A distributed cache like Redis would be preferred in production.
+1. **Microservices over Monolith:** This pattern isolates compute-heavy workloads (PDF parsing, LLM generation) from read-heavy workloads (serving adaptive quizzes). A spike in document ingestion won't degrade the response time for students actively taking tests.
+2. **Qdrant for Deduplication:** Using a vector database allows for *semantic* deduplication. Instead of just preventing exact file duplicates via hashing, Qdrant prevents the system from storing redundant questions if a teacher uploads two entirely different PDFs that cover the exact same subject matter.
+3. **Rolling Window Adaptive Difficulty:** Rather than a naive correct=up/wrong=down algorithm, difficulty is calculated using a rolling window of recent performance. This prevents a single accidental wrong answer from instantly punishing the student with drastically harder or easier subsequent questions.
+4. **Auth Service Code Duplication:** The JWT validation logic and user models are currently duplicated across the Auth, Ingestion, and Quiz services. In production we'd extract auth into a shared internal package published to a private PyPI registry, since gateway-level validation would require the gateway to decode JWTs and adds a single point of failure.
+5. **In-Memory Cache vs Redis:** The Quiz service utilizes a simple in-memory `TTLCache` to speed up question retrieval. While a distributed cache like Redis is necessary in production (to survive container restarts and share state across horizontal replicas), the in-memory cache was intentionally chosen here to simplify the local deployment footprint for reviewers.

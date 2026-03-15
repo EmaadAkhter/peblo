@@ -159,9 +159,8 @@ async def detect_topic(chunk_text: str, subject: str = "") -> str:
                 {
                     "role": "system",
                     "content": (
-                        "You are a topic classifier. Given a text chunk, you MUST classify it into exactly one "
-                        "of these predefined topics: 'Numbers', 'Shapes', 'Grammar', 'Vocabulary', 'Plants', 'Animals'. "
-                        "Respond with ONLY the exact topic name. No explanation, no punctuation."
+                        "You are a topic classifier. Given a text chunk, you MUST extract a 1-3 word topic representing its core focus. "
+                        "Respond with ONLY the exact topic string. No explanation, no punctuation."
                     ),
                 },
                 {
@@ -176,25 +175,10 @@ async def detect_topic(chunk_text: str, subject: str = "") -> str:
         # Clean up — remove any quotes or extra punctuation
         topic = re.sub(r'^["\']|["\']$', "", topic).strip()
         
-        valid_topics = {"Numbers", "Shapes", "Grammar", "Vocabulary", "Plants", "Animals"}
-        if topic not in valid_topics:
-            # Fallback based on subject if the LLM output something else
-            if "math" in subject.lower():
-                topic = "Numbers"
-            elif "english" in subject.lower():
-                topic = "Grammar"
-            elif "science" in subject.lower():
-                topic = "Plants"
-            else:
-                topic = "Numbers"
-                
-        return topic
+        return topic.title() if topic else "General"
     except Exception as e:
-        logger.warning(f"Topic detection failed, defaulting to basic mapping: {e}")
-        if "math" in subject.lower(): return "Numbers"
-        if "science" in subject.lower(): return "Plants"
-        if "english" in subject.lower(): return "Grammar"
-        return "Numbers"
+        logger.warning(f"Topic detection failed: {e}")
+        return "General"
 
 
 async def process_pdf(
@@ -226,10 +210,7 @@ async def process_pdf(
 
     stored_count = 0
 
-    valid_topics = {"Numbers", "Shapes", "Grammar", "Vocabulary", "Plants", "Animals"}
-    enforced_topic = None
-    if topic:
-        enforced_topic = topic if topic in valid_topics else topic.title()
+    enforced_topic = topic.title() if topic else None
 
     for idx, chunk_text in enumerate(raw_chunks):
         chunk_id = generate_chunk_id(source_id, idx)
