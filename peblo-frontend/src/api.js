@@ -62,6 +62,9 @@ export const api = {
 
     getSources: () => request('/ingest/sources'),
 
+    deleteSource: (sourceId) =>
+        request(`/ingest/${sourceId}`, { method: 'DELETE' }),
+
     getIngestStatus: (sourceId) =>
         request(`/ingest/${sourceId}/status`),
 

@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { FileText } from 'lucide-react';
+import { FileText, Trash2 } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import StatusBadge from '../../components/StatusBadge/StatusBadge';
 import { api } from '../../api';
 import styles from './SourceCard.module.css';
 
-export default function SourceCard({ source }) {
+export default function SourceCard({ source, onDelete }) {
     const [generating, setGenerating] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [message, setMessage] = useState('');
 
     const handleGenerate = async () => {
@@ -19,6 +20,18 @@ export default function SourceCard({ source }) {
             setMessage('Generation failed. Try again.');
         } finally {
             setGenerating(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!window.confirm(`Delete "${source.filename}" and all its chunks & questions?`)) return;
+        setDeleting(true);
+        try {
+            await api.deleteSource(source.source_id);
+            if (onDelete) onDelete(source.source_id);
+        } catch (err) {
+            setMessage('Delete failed. Try again.');
+            setDeleting(false);
         }
     };
 
@@ -54,6 +67,14 @@ export default function SourceCard({ source }) {
                         {generating ? 'Generating…' : 'Generate Quiz'}
                     </Button>
                 )}
+                <Button
+                    variant="danger"
+                    size="sm"
+                    loading={deleting}
+                    onClick={handleDelete}
+                >
+                    <Trash2 size={14} />
+                </Button>
                 {message && <span className={styles.message}>{message}</span>}
             </div>
         </div>

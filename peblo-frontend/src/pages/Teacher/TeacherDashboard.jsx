@@ -108,7 +108,11 @@ export default function TeacherDashboard() {
                             ) : (
                                 <div className={styles.sourcesList}>
                                     {sources.map((source) => (
-                                        <SourceCard key={source.source_id} source={source} />
+                                        <SourceCard
+                                            key={source.source_id}
+                                            source={source}
+                                            onDelete={(id) => setSources(prev => prev.filter(s => s.source_id !== id))}
+                                        />
                                     ))}
                                 </div>
                             )}

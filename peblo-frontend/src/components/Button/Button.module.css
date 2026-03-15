@@ -76,6 +76,17 @@
     color: var(--text-primary);
 }
 
+.danger {
+    background: transparent;
+    color: #e53e3e;
+    border-color: #e53e3e;
+}
+
+.danger:hover:not(:disabled) {
+    background: #e53e3e;
+    color: #fff;
+}
+
 /* Loading spinner */
 .spinner {
     width: 16px;
