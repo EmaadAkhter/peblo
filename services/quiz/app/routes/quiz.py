@@ -165,3 +165,18 @@ async def submit_answer(
         new_difficulty=new_difficulty,
         topic=topic,
     )
+
+
+@router.delete("/quiz/{question_id}")
+async def delete_question(
+    question_id: str,
+    current_user: UserInDB = Depends(get_current_teacher),
+):
+    """Delete a single quiz question by ID."""
+    db = get_database()
+
+    result = await db.questions.delete_one({"_id": question_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail=f"Question {question_id} not found")
+
+    return {"deleted": True, "question_id": question_id}

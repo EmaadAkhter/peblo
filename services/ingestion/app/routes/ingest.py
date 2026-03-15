@@ -125,6 +125,36 @@ async def get_ingest_status(
         "chunk_count": source.get("chunk_count", 0),
     }
 
+
+@router.delete("/ingest/{source_id}")
+async def delete_source(
+    source_id: str,
+    current_user: UserInDB = Depends(get_current_teacher),
+):
+    """Delete a source and all its associated chunks and questions."""
+    db = get_database()
+
+    source = await db.sources.find_one({"_id": source_id})
+    if not source:
+        raise HTTPException(status_code=404, detail=f"Source {source_id} not found")
+
+    questions_result = await db.questions.delete_many({"source_id": source_id})
+    chunks_result = await db.chunks.delete_many({"source_id": source_id})
+    await db.sources.delete_one({"_id": source_id})
+
+    logger.info(
+        f"Deleted source {source_id}: "
+        f"{chunks_result.deleted_count} chunks, "
+        f"{questions_result.deleted_count} questions"
+    )
+
+    return {
+        "deleted": True,
+        "source_id": source_id,
+        "chunks_deleted": chunks_result.deleted_count,
+        "questions_deleted": questions_result.deleted_count,
+    }
+
 async def _generate_quiz_background(source_id: str, chunk_ids: list[str] | None):
     """Background task: generate questions for a source."""
     db = get_database()

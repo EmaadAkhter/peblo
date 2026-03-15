@@ -265,3 +265,37 @@ Authorization: Bearer <access_token>
   }
 ]
 ```
+
+## DELETE /ingest/{source_id}
+
+**Input:**
+```
+DELETE /ingest/SRC_001
+Authorization: Bearer <access_token>
+```
+
+**Output:**
+```json
+{
+  "deleted": true,
+  "source_id": "SRC_001",
+  "chunks_deleted": 12,
+  "questions_deleted": 34
+}
+```
+
+## DELETE /quiz/{question_id}
+
+**Input:**
+```
+DELETE /quiz/Q_SRC001_CH01_001
+Authorization: Bearer <access_token>
+```
+
+**Output:**
+```json
+{
+  "deleted": true,
+  "question_id": "Q_SRC001_CH01_001"
+}
+```
