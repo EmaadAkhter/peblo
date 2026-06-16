@@ -1,10 +1,10 @@
-# Peblo - AI Quiz Platform
+# Studium - AI Quiz Platform
 
-Peblo is a modern, AI-powered quiz platform built with a microservices architecture. It enables teachers to upload educational PDFs, instantly generates quizzes using LLMs, and allows students to take adaptive quizzes tailored to their performance.
+Studium is a modern, AI-powered quiz platform built with a microservices architecture. It enables teachers to upload educational PDFs, instantly generates quizzes using LLMs, and allows students to take adaptive quizzes tailored to their performance.
 
 ## System Architecture
 
-Peblo routes external requests through an Nginx API Gateway to three distinct, specialized microservices. All services connect to a shared MongoDB instance, and the ingestion service interacts with external LLMs and Vector databases.
+Studium routes external requests through an Nginx API Gateway to three distinct, specialized microservices. All services connect to a shared MongoDB instance, and the ingestion service interacts with external LLMs and Vector databases.
 
 ![System Architecture](assets/System_Architecture.png)
 
@@ -17,7 +17,7 @@ Create a `.env` file in the root directory (you can copy `.env.example` if it ex
 ```env
 # MongoDB Connection (Shared Datastore)
 MONGODB_URI=mongodb+srv://<your_username>:<your_password>@<your_cluster>.mongodb.net/
-DATABASE_NAME=peblo
+DATABASE_NAME=Studium
 
 # Qdrant Vector DB (For Ingestion & Deduplication)
 QDRANT_URL=https://<your_cluster>.aws.cloud.qdrant.io:6333
